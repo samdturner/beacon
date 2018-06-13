@@ -10,13 +10,17 @@ class IndexLoader
     new(file_path).call
   end
 
+  def self.tuple_and_node_for_target(file_path, target, condition)
+    call(file_path).tuple_and_node_for_target(target, condition)
+  end
+
   def call
     if file_array_of_arrays[0][0] == 'leaf'
       return LeafNode.new(formatted_leaf_node_values, leaf_node_file_path.first)
     end
     TrafficDirectorNode.new(
       traffic_director_values.map(&:to_i),
-      traffic_director_child_node_paths
+      traffic_director_child_node_paths,
     )
   end
 
