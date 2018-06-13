@@ -1,0 +1,5 @@
+leaf
+/Users/samturner/Desktop/DBMS/spec/index_scan_files/multiple_traffic_directors/leaf_4.txt
+7,i
+8,j
+9,k

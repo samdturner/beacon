@@ -37,6 +37,11 @@ RSpec.describe IndexLoader do
         expect(described_class.call("#{file_path}/file6.txt"))
           .to eq(LeafNode.new(['1,a,', '2,b,', '3,c,'], 'file_path6'))
       end
+
+      it 'returns the node that is the last in the chain' do
+        expect(described_class.call("#{file_path}/file7.txt"))
+          .to eq(LeafNode.new(['1,a,', '2,b,', '3,c,'], nil))
+      end
     end
   end
 end

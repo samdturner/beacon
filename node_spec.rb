@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative './node'
 
 RSpec.describe TrafficDirectorNode do
@@ -24,17 +25,21 @@ RSpec.describe TrafficDirectorNode do
 
     context 'when the condition is EQUALS' do
       it 'opens the correct file when the target is 0' do
-        expect(File).to receive(:open).with('file/path/1')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/1', 0, equals)
         subject.tuple_and_node_for_target(0, equals)
       end
 
       it 'opens the correct file when the target is 3' do
-        expect(File).to receive(:open).with('file/path/3')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/3', 3, equals)
         subject.tuple_and_node_for_target(3, equals)
       end
 
       it 'does not open any file when there is no match' do
-        expect(File).not_to receive(:open)
+        expect(IndexLoader).not_to receive(:tuple_and_node_for_target)
         subject.tuple_and_node_for_target(6, equals)
       end
 
@@ -47,17 +52,21 @@ RSpec.describe TrafficDirectorNode do
       let(:greater) { :GREATER }
 
       it 'opens the correct file when the target is 2' do
-        expect(File).to receive(:open).with('file/path/3')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/3', 2, greater)
         subject.tuple_and_node_for_target(2, greater)
       end
 
       it 'opens the correct file when the target is 3' do
-        expect(File).to receive(:open).with('file/path/5')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/5', 3, greater)
         subject.tuple_and_node_for_target(3, greater)
       end
 
       it 'does not open any file when there is no match' do
-        expect(File).not_to receive(:open)
+        expect(IndexLoader).not_to receive(:tuple_and_node_for_target)
         subject.tuple_and_node_for_target(5, greater)
         subject.tuple_and_node_for_target(6, greater)
       end
@@ -72,27 +81,37 @@ RSpec.describe TrafficDirectorNode do
       let(:less) { :LESS }
 
       it 'opens the correct file when the target is 2' do
-        expect(File).to receive(:open).with('file/path/3')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/3', 2, less)
         subject.tuple_and_node_for_target(2, less)
       end
 
       it 'opens the correct file when the target is 3' do
-        expect(File).to receive(:open).with('file/path/3')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/3', 3, less)
         subject.tuple_and_node_for_target(3, less)
       end
 
       it 'opens the correct file when the target is 4' do
-        expect(File).to receive(:open).with('file/path/5')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/5', 4, less)
         subject.tuple_and_node_for_target(4, less)
       end
 
       it 'opens the correct file when the target is 5' do
-        expect(File).to receive(:open).with('file/path/5')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/5', 5, less)
         subject.tuple_and_node_for_target(5, less)
       end
 
       it 'opens the correct file when the target is 6' do
-        expect(File).to receive(:open).with('file/path/5')
+        expect(IndexLoader)
+          .to receive(:tuple_and_node_for_target)
+          .with('file/path/5', 6, less)
         subject.tuple_and_node_for_target(6, less)
       end
     end
@@ -124,7 +143,7 @@ end
 RSpec.describe LeafNode do
   let(:subject) { described_class.new(tuples, next_node_file_path) }
   let(:tuples) { %w[1,a, 2,b, 2,c, 2,d, 3,e,] }
-  let(:next_node_file_path) { 'next_node_file_path' }
+  let(:next_node_file_path) { nil }
 
   describe '.initialize' do
     it 'assigns tuples' do
@@ -231,6 +250,28 @@ RSpec.describe LeafNode do
           .to be(nil)
       end
     end
+
+    context 'when there are 3 leafs nodes in the chain' do
+      let(:tuples) { %w[1,a, 2,b, 3,c,] }
+      let(:next_node_file_path) do
+        '/Users/samturner/Desktop/DBMS/spec/index_loader_files/multiple_leaf_nodes/leaf_2.txt'
+      end
+      let(:equal) { :EQUAL }
+
+      it 'returns the correct tuple when the target exists on the second node in the chain' do
+        expect(subject.tuple_and_node_for_target(4, equal))
+          .to include(tuple: '4,d,')
+      end
+
+      it 'returns the correct tuple when the target exists on the third node in the chain' do
+        expect(subject.tuple_and_node_for_target(9, equal))
+          .to include(tuple: '9,i,')
+      end
+
+      it 'returns nil when the the target does not exist in the chain' do
+        expect(subject.tuple_and_node_for_target(10, equal)).to eq(nil)
+      end
+    end
   end
 
   describe '#==' do
@@ -245,7 +286,7 @@ RSpec.describe LeafNode do
     end
 
     it 'returns false when the next node file paths are not equal' do
-      other_node = described_class.new(tuples, next_node_file_path + 'a')
+      other_node = described_class.new(tuples, 'a')
       expect(subject == other_node).to be(false)
     end
 

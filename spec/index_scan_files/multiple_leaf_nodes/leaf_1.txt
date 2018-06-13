@@ -1,5 +1,5 @@
 leaf
-
+/Users/samturner/Desktop/DBMS/spec/index_scan_files/multiple_leaf_nodes/leaf_2.txt
 1,a
 2,b
 3,c

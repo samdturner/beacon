@@ -1,0 +1,3 @@
+traffic_director
+13,16,19
+/Users/samturner/Desktop/DBMS/spec/index_scan_files/multiple_traffic_directors/leaf_4.txt,/Users/samturner/Desktop/DBMS/spec/index_scan_files/multiple_traffic_directors/leaf_5.txt,/Users/samturner/Desktop/DBMS/spec/index_scan_files/multiple_traffic_directors/leaf_6.txt

@@ -1,22 +1,34 @@
-require 'byebug'
+require_relative './index_loader'
 
 class IndexScan
   END_OF_FILE = :EOF
 
-  def initialize(current_node, target, condition)
-    @current_node = current_node
+  def initialize(file_path, target, condition)
+    @file_path = file_path
     @target = target
     @condition = condition
+    @current_node = nil
   end
 
   def next
-    result = @current_node.tuple_and_node_for_target(@target, @condition)
+    result = if @current_node.nil?
+      IndexLoader.tuple_and_node_for_target(
+        @file_path,
+        @target,
+        @condition,
+      )
+    else
+      @current_node.tuple_and_node_for_target(
+        @target,
+        @condition,
+      )
+    end
 
     if result.nil?
       END_OF_FILE
     else
-      @current_node = result.next_leaf_node
-      result.tuple
+      @current_node = result.fetch(:node)
+      result.fetch(:tuple)
     end
   end
 end

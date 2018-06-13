@@ -1,0 +1,6 @@
+leaf
+/Users/samturner/Desktop/DBMS/spec/index_scan_files/multiple_traffic_directors/leaf_2.txt
+1,a
+2,b
+2,c
+3,d

@@ -1,3 +1,6 @@
+require 'byebug'
+require_relative './index_loader'
+
 # Directs traffic when searching for values that meet a particular condition
 class TrafficDirectorNode
   attr_reader :director_values, :child_node_paths
@@ -10,8 +13,11 @@ class TrafficDirectorNode
   def tuple_and_node_for_target(target, condition)
     @director_values.each_with_index do |director_value, director_idx|
       if potential_match_in_subtree?(target, director_value, condition)
-        File.open(@child_node_paths[director_idx])
-        return
+        return IndexLoader.tuple_and_node_for_target(
+          @child_node_paths[director_idx],
+          target,
+          condition,
+        )
       end
     end
 
@@ -52,11 +58,20 @@ class LeafNode
   def tuple_and_node_for_target(target, condition)
     @tuples.drop(@tuple_idx).each_with_index do |tuple, _idx|
       @tuple_idx += 1
-      if match?(condition, tuple[0].to_i, target)
+      if match?(condition, tuple.split(',')[0].to_i, target)
         return { node: self, tuple: tuple }
       end
     end
-    nil
+
+    if @next_node_file_path.nil?
+      nil
+    else
+      IndexLoader.tuple_and_node_for_target(
+        @next_node_file_path,
+        target,
+        condition,
+      )
+    end
   end
 
   def ==(other)
