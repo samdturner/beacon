@@ -1,4 +1,3 @@
-require 'byebug'
 require_relative './node'
 
 RSpec.describe TrafficDirectorNode do
@@ -80,38 +79,17 @@ RSpec.describe TrafficDirectorNode do
     context 'when the condition is LESS' do
       let(:less) { :LESS }
 
-      it 'opens the correct file when the target is 2' do
+      it 'always traverses down the left most node' do
         expect(IndexLoader)
           .to receive(:tuple_and_node_for_target)
-          .with('file/path/3', 2, less)
+          .with('file/path/1', 2, less)
         subject.tuple_and_node_for_target(2, less)
       end
 
-      it 'opens the correct file when the target is 3' do
+      it 'always traverses down the left most node' do
         expect(IndexLoader)
           .to receive(:tuple_and_node_for_target)
-          .with('file/path/3', 3, less)
-        subject.tuple_and_node_for_target(3, less)
-      end
-
-      it 'opens the correct file when the target is 4' do
-        expect(IndexLoader)
-          .to receive(:tuple_and_node_for_target)
-          .with('file/path/5', 4, less)
-        subject.tuple_and_node_for_target(4, less)
-      end
-
-      it 'opens the correct file when the target is 5' do
-        expect(IndexLoader)
-          .to receive(:tuple_and_node_for_target)
-          .with('file/path/5', 5, less)
-        subject.tuple_and_node_for_target(5, less)
-      end
-
-      it 'opens the correct file when the target is 6' do
-        expect(IndexLoader)
-          .to receive(:tuple_and_node_for_target)
-          .with('file/path/5', 6, less)
+          .with('file/path/1', 6, less)
         subject.tuple_and_node_for_target(6, less)
       end
     end

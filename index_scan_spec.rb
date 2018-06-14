@@ -101,6 +101,30 @@ RSpec.describe IndexScan do
         expect(index_scan.next).to eq('19,u,')
         expect(index_scan.next).to eq(described_class::END_OF_FILE)
       end
+
+      context 'when the condition is LESS' do
+        it 'returns the correct tuples' do
+          index_scan = described_class.new(file_path, 5, :LESS)
+          expect(index_scan.next).to eq('1,a,')
+          expect(index_scan.next).to eq('2,b,')
+          expect(index_scan.next).to eq('2,c,')
+          expect(index_scan.next).to eq('3,d,')
+          expect(index_scan.next).to eq('4,e,')
+          expect(index_scan.next).to eq(described_class::END_OF_FILE)
+        end
+      end
+
+      context 'when the condition is GREATER' do
+        it 'returns the correct tuples' do
+          index_scan = described_class.new(file_path, 15, :GREATER)
+          expect(index_scan.next).to eq('16,q,')
+          expect(index_scan.next).to eq('17,r,')
+          expect(index_scan.next).to eq('18,s,')
+          expect(index_scan.next).to eq('19,t,')
+          expect(index_scan.next).to eq('19,u,')
+          expect(index_scan.next).to eq(described_class::END_OF_FILE)
+        end
+      end
     end
   end
 end

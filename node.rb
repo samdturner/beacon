@@ -39,8 +39,7 @@ class TrafficDirectorNode
     when :GREATER
       director_value > target
     when :LESS
-      director_value >= target ||
-        @director_values.last == director_value
+      @director_values.first == director_value
     end
   end
 end
